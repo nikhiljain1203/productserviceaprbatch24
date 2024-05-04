@@ -2,6 +2,7 @@ package com.example.productserviceaprbatch24.controllers;
 
 import com.example.productserviceaprbatch24.models.Product;
 import com.example.productserviceaprbatch24.services.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-
     private ProductService productService;
 
     ProductController(ProductService productService) {
@@ -39,7 +39,7 @@ public class ProductController {
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
-        return new Product();
+        return productService.createProduct(product);
     }
 
     @PutMapping("/{id}")
@@ -56,5 +56,4 @@ public class ProductController {
     public Product deleteProductbyId(@PathVariable("id") Long id) {
         return new Product();
     }
-
 }
