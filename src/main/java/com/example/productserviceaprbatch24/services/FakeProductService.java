@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
@@ -30,12 +32,24 @@ public class FakeProductService implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        return null;
+        // Get the products from 3rd Party
+        FakeStoreProductDto[] fakeStoreProductDtoList =
+        restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
+
+        //convert result
+        List<Product> products = new ArrayList<>();
+        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtoList) {
+            products.add(convertDtoToProduct(fakeStoreProductDto));
+        }
+        return products;
     }
 
     @Override
-    public Product updateProduct() {
-        return null;
+    public Product updateProduct(Long id, Product product) {
+        FakeStoreProductDto fakeStoreProductDto = convertProductToDto(product);
+        fakeStoreProductDto = restTemplate.patchForObject("https://fakestoreapi.com/products/" + id,
+                fakeStoreProductDto, FakeStoreProductDto.class);
+        return convertDtoToProduct(fakeStoreProductDto);
     }
 
     @Override

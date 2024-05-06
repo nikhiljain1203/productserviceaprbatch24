@@ -3,6 +3,8 @@ package com.example.productserviceaprbatch24.controllers;
 import com.example.productserviceaprbatch24.models.Product;
 import com.example.productserviceaprbatch24.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,13 +30,13 @@ public class ProductController {
 
     @GetMapping("/{id}")
     //Ideally should return a Product DTO
-    public Product getProductbyId(@PathVariable("id") Long id) {
-        return productService.getProductById(id);
+    public ResponseEntity<Product> getProductbyId(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(productService.getProductById(id), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return new ArrayList<>();
+        return productService.getAllProducts();
     }
 
     @PostMapping
@@ -49,7 +51,7 @@ public class ProductController {
 
     @PatchMapping("/{id}")
     public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
-        return new Product();
+        return productService.updateProduct(id, product);
     }
 
     @DeleteMapping("/{id}")
