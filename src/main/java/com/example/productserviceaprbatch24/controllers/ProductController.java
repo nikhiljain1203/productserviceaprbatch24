@@ -1,5 +1,6 @@
 package com.example.productserviceaprbatch24.controllers;
 
+import com.example.productserviceaprbatch24.exceptions.ProductLimitReachedExpection;
 import com.example.productserviceaprbatch24.models.Product;
 import com.example.productserviceaprbatch24.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,16 @@ public class ProductController {
 
     @GetMapping("/{id}")
     //Ideally should return a Product DTO
-    public ResponseEntity<Product> getProductbyId(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(productService.getProductById(id), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Product> getProductbyId(@PathVariable("id") Long id)
+            throws ProductLimitReachedExpection {
+        if(id>=0) {
+            throw new ProductLimitReachedExpection("There can be max 100 items");
+        }
+        //try {
+            return new ResponseEntity<>(productService.getProductById(id), HttpStatus.INTERNAL_SERVER_ERROR);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND)
+//        }
     }
 
     @GetMapping
@@ -58,4 +67,22 @@ public class ProductController {
     public Product deleteProductbyId(@PathVariable("id") Long id) {
         return new Product();
     }
+
+//    @ExceptionHandler({RuntimeException.class, NullPointerException.class})
+//    public ResponseEntity<String> handleException() {
+//        System.out.println("Something went Wrong");
+//        return new ResponseEntity<>("Something went Wrong", HttpStatus.NOT_FOUND);
+//    }
+//
+//    @ExceptionHandler(IndexOutOfBoundsException.class)
+//    public ResponseEntity<String> handleIndexException() {
+//        System.out.println("Something went Wrong");
+//        return new ResponseEntity<>("Something went Wrong", HttpStatus.NOT_FOUND);
+//    }
+
+//    @org.springframework.web.bind.annotation.ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<String> handleIndexException() {
+//        System.out.println("Something Wrong");
+//        return new ResponseEntity<>("Something Wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }
