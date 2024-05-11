@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Service
+@Service("fakeProductService")
 public class FakeProductService implements ProductService {
 
     private RestTemplate restTemplate;
@@ -90,7 +90,7 @@ public class FakeProductService implements ProductService {
         // Here you would assign the id and title of the category appropriately.
         // For demonstration, let's assume the category title is what's passed in the DTO
         // and we set a dummy ID or fetch the correct ID based on the title from a database or other source.
-        category.setId(0); // Dummy ID or retrieve appropriately
+        category.setId(0L); // Dummy ID or retrieve appropriately
         category.setTitle(dto.getCategory());
 
         product.setCategory(category);

@@ -4,6 +4,7 @@ import com.example.productserviceaprbatch24.exceptions.ProductLimitReachedExpect
 import com.example.productserviceaprbatch24.models.Product;
 import com.example.productserviceaprbatch24.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.util.List;
 public class ProductController {
     private ProductService productService;
 
+    //@Qualifier("selfProductService")
     ProductController(ProductService productService) {
         this.productService = productService;
     }
@@ -33,11 +35,11 @@ public class ProductController {
     //Ideally should return a Product DTO
     public ResponseEntity<Product> getProductbyId(@PathVariable("id") Long id)
             throws ProductLimitReachedExpection {
-        if(id>=0) {
-            throw new ProductLimitReachedExpection("There can be max 100 items");
-        }
+//        if(id>=0) {
+//            throw new ProductLimitReachedExpection("There can be max 100 items");
+//        }
         //try {
-            return new ResponseEntity<>(productService.getProductById(id), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
 //        } catch (Exception e) {
 //            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND)
 //        }
@@ -50,6 +52,7 @@ public class ProductController {
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
+        //productvalidations.validateProduct
         return productService.createProduct(product);
     }
 
