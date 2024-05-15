@@ -12,8 +12,8 @@ import java.util.List;
 @Entity
 public class Category extends BaseModel{
     private String title;
-    @OneToMany
-    private List<Product> productList;
+//    @OneToMany(mappedBy = "category")
+//    private List<Product> productList;
 }
 
 // fetch query select * from category join
