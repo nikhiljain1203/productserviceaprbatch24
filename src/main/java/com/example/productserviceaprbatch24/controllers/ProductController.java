@@ -26,23 +26,14 @@ import java.util.List;
 public class ProductController {
     private ProductService productService;
 
-    //@Qualifier("selfProductService")
     ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping("/{id}")
     //Ideally should return a Product DTO
-    public ResponseEntity<Product> getProductbyId(@PathVariable("id") Long id)
-            throws ProductLimitReachedExpection {
-//        if(id>=0) {
-//            throw new ProductLimitReachedExpection("There can be max 100 items");
-//        }
-        //try {
+    public ResponseEntity<Product> getProductbyId(@PathVariable("id") Long id){
             return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND)
-//        }
     }
 
     @GetMapping

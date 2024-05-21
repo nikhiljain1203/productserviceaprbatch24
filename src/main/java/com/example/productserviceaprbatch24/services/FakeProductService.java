@@ -4,6 +4,7 @@ import com.example.productserviceaprbatch24.dtos.FakeStoreProductDto;
 import com.example.productserviceaprbatch24.models.Category;
 import com.example.productserviceaprbatch24.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service("fakeProductService")
+@Primary
 public class FakeProductService implements ProductService {
 
     private RestTemplate restTemplate;
@@ -27,8 +29,8 @@ public class FakeProductService implements ProductService {
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
                 FakeStoreProductDto.class);
 
-        //return convertDtoToProduct(fakeStoreProductDto);
-        throw new RuntimeException();
+        return convertDtoToProduct(fakeStoreProductDto);
+        //throw new RuntimeException();
     }
 
     @Override
