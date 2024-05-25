@@ -3,6 +3,7 @@ package com.example.productserviceaprbatch24.controllers;
 import com.example.productserviceaprbatch24.exceptions.ProductLimitReachedExpection;
 import com.example.productserviceaprbatch24.models.Product;
 import com.example.productserviceaprbatch24.services.ProductService;
+import com.example.productserviceaprbatch24.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,20 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private ProductService productService;
+    private TokenService tokenService;
 
-    ProductController(ProductService productService) {
+    ProductController(ProductService productService, TokenService tokenService) {
         this.productService = productService;
+        this.tokenService = tokenService;
     }
 
     @GetMapping("/{id}")
     //Ideally should return a Product DTO
-    public ResponseEntity<Product> getProductbyId(@PathVariable("id") Long id){
-            return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
+    public ResponseEntity<Product> getProductbyId(@RequestHeader("token") String token, @PathVariable("id") Long id){
+        if(!tokenService.validateToken(token)) {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
     @GetMapping
@@ -43,7 +49,6 @@ public class ProductController {
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
-        //productvalidations.validateProduct
         return productService.createProduct(product);
     }
 
