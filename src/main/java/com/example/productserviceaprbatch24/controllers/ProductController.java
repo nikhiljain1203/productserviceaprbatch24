@@ -35,10 +35,10 @@ public class ProductController {
 
     @GetMapping("/{id}")
     //Ideally should return a Product DTO
-    public ResponseEntity<Product> getProductbyId(@RequestHeader("token") String token, @PathVariable("id") Long id){
-        if(!tokenService.validateToken(token)) {
-            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-        }
+    public ResponseEntity<Product> getProductbyId(@PathVariable("id") Long id){
+//        if(!tokenService.validateToken(token)) {
+//            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+//        }
         return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
