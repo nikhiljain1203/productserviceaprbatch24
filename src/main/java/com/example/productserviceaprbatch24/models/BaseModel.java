@@ -7,10 +7,12 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @MappedSuperclass
 @Getter
 @Setter
-public abstract class BaseModel {
+public abstract class BaseModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //AUTO INCREMENT
     private Long id;

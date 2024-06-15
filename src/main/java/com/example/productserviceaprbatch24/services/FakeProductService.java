@@ -3,8 +3,10 @@ package com.example.productserviceaprbatch24.services;
 import com.example.productserviceaprbatch24.dtos.FakeStoreProductDto;
 import com.example.productserviceaprbatch24.models.Category;
 import com.example.productserviceaprbatch24.models.Product;
+import jakarta.persistence.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,22 +16,33 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service("fakeProductService")
-//@Primary
+@Primary
 public class FakeProductService implements ProductService {
 
     private RestTemplate restTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    FakeProductService(RestTemplate restTemplate) {
+    FakeProductService(RestTemplate restTemplate, RedisTemplate redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
     public Product getProductById(Long id) {
+        // Products - Key id - CacheKey + Key == HashKey
+        // Categories - Key id
+        Product product = (Product) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCTS_"+id);
+        if(product != null) {
+            // Cache HIT
+            return product;
+        }
         FakeStoreProductDto fakeStoreProductDto =
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
                 FakeStoreProductDto.class);
 
-        return convertDtoToProduct(fakeStoreProductDto);
+        product = convertDtoToProduct(fakeStoreProductDto);
+        redisTemplate.opsForHash().put("PRODUCTS", "PRODUCTS_" + product.getId(), product);
+        return product;
         //throw new RuntimeException();
     }
 
