@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service("fakeProductService")
-@Primary
+//@Primary
 public class FakeProductService implements ProductService {
 
     private RestTemplate restTemplate;
