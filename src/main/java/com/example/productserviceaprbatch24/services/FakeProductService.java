@@ -1,6 +1,7 @@
 package com.example.productserviceaprbatch24.services;
 
 import com.example.productserviceaprbatch24.dtos.FakeStoreProductDto;
+import com.example.productserviceaprbatch24.dtos.UserDto;
 import com.example.productserviceaprbatch24.models.Category;
 import com.example.productserviceaprbatch24.models.Product;
 import jakarta.persistence.Cacheable;
@@ -31,17 +32,23 @@ public class FakeProductService implements ProductService {
     public Product getProductById(Long id) {
         // Products - Key id - CacheKey + Key == HashKey
         // Categories - Key id
-        Product product = (Product) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCTS_"+id);
-        if(product != null) {
-            // Cache HIT
-            return product;
+        UserDto userDto = restTemplate.getForObject("http://userservice/users/1", UserDto.class);
+        if(userDto == null) {
+            throw new RuntimeException("User not found");
         }
+
+        // Check if product exists in cache
+//        Product product = (Product) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCTS_"+id);
+//        if(product != null) {
+//            // Cache HIT
+//            return product;
+//        }
         FakeStoreProductDto fakeStoreProductDto =
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
                 FakeStoreProductDto.class);
 
-        product = convertDtoToProduct(fakeStoreProductDto);
-        redisTemplate.opsForHash().put("PRODUCTS", "PRODUCTS_" + product.getId(), product);
+        Product product = convertDtoToProduct(fakeStoreProductDto);
+        //redisTemplate.opsForHash().put("PRODUCTS", "PRODUCTS_" + product.getId(), product);
         return product;
         //throw new RuntimeException();
     }
